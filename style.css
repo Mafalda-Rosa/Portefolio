@@ -1,0 +1,124 @@
+/* Definições Gerais */
+body {
+  font-family:
+    "Quicksand",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: #fdebed; /* Rosa-bébé */
+  color: #4a2c2a; /* Castanho-escuro */
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contentor Central */
+.main-container {
+  width: 100%;
+  max-width: 480px; /* Aumentado ligeiramente para o texto ficar bem enquadrado */
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Títulos */
+.main-header {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 3.5rem;
+  color: #4a2c2a;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: #4a2c2a;
+  margin: 0.3rem 0 0 0;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* Menu de Botões */
+.menu-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Botões */
+.btn {
+  font-family: "Quicksand", sans-serif;
+  display: block;
+  background-color: #fff0f3;
+  color: #4a2c2a;
+  text-decoration: none;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid #f7d6d9;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.25s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn:hover {
+  background-color: #f8b4b8;
+  border-color: #f39fa4;
+}
+
+/* Secção About Me */
+.about-content {
+  margin-bottom: 0.5rem;
+  padding: 1.5rem 1rem;
+  border-bottom: 1px dashed #f39fa4;
+  text-align: left; /* Texto alinhado à esquerda para facilidade de leitura */
+}
+
+.profile-img {
+  display: block;
+  margin: 0 auto 1.2rem auto;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f8b4b8;
+}
+
+/* Parágrafos com Círculo Minimalista */
+.about-text p {
+  position: relative;
+  padding-left: 1.2rem; /* Espaço para o círculo */
+  margin: 0.8rem 0;
+  line-height: 1.6;
+  font-size: 0.92rem;
+  color: #4a2c2a;
+}
+
+/* Criação do Círculo Minimalista antes de cada parágrafo */
+.about-text p::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 7px;
+  height: 7px;
+  background-color: #f8b4b8; /* Círculo em tom rosa */
+  border-radius: 50%;
+}
+
+.hidden {
+  display: none;
+}
