@@ -18,7 +18,7 @@ body {
 /* Contentor Central */
 .main-container {
   width: 100%;
-  max-width: 480px; /* Aumentado ligeiramente para o texto ficar bem enquadrado */
+  max-width: 480px;
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -79,12 +79,39 @@ h1 {
   border-color: #f39fa4;
 }
 
+/* Alinhamento de botões com ícone */
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Ícones SVG com tamanho reduzido */
+.icon-svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Cores Originais dos Ícones */
+.youtube-icon {
+  fill: #ff0000;
+}
+
+.github-icon {
+  fill: #24292e;
+}
+
+.email-icon {
+  fill: #ea4335;
+}
+
 /* Secção About Me */
 .about-content {
   margin-bottom: 0.5rem;
   padding: 1.5rem 1rem;
   border-bottom: 1px dashed #f39fa4;
-  text-align: left; /* Texto alinhado à esquerda para facilidade de leitura */
+  text-align: left;
 }
 
 .profile-img {
@@ -100,14 +127,13 @@ h1 {
 /* Parágrafos com Círculo Minimalista */
 .about-text p {
   position: relative;
-  padding-left: 1.2rem; /* Espaço para o círculo */
+  padding-left: 1.2rem;
   margin: 0.8rem 0;
   line-height: 1.6;
   font-size: 0.92rem;
   color: #4a2c2a;
 }
 
-/* Criação do Círculo Minimalista antes de cada parágrafo */
 .about-text p::before {
   content: "";
   position: absolute;
@@ -115,8 +141,33 @@ h1 {
   top: 0.55rem;
   width: 7px;
   height: 7px;
-  background-color: #f8b4b8; /* Círculo em tom rosa */
+  background-color: #f8b4b8;
   border-radius: 50%;
+}
+
+/* Secção Contact Box */
+.contact-box {
+  margin-top: -0.2rem;
+  padding: 0.8rem 1rem;
+  border-top: 1px dashed #f39fa4;
+  display: flex;
+  justify-content: center;
+}
+
+.email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a2c2a;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: opacity 0.2s ease;
+}
+
+.email-link:hover {
+  opacity: 0.75;
+  text-decoration: underline;
 }
 
 .hidden {
