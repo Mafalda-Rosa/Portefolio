@@ -1,4 +1,5 @@
-const CHANNEL_ID = "UC-v1yLlsG3A-4eC1J106_rA";
+const API_KEY = "AIzaSyC_-mD0SnxS917L6H9JChpqxW3wnlzY0ZQ";
+const CHANNEL_ID = "UCmLuDdUU9hQBPvKamaO87cg";
 
 const btnAbout = document.getElementById("btnAbout");
 const aboutSection = document.getElementById("aboutSection");
@@ -43,7 +44,7 @@ btnBackYoutube.addEventListener("click", () => {
   youtubeSection.classList.add("hidden");
 });
 
-// --- "View in full screen" transition: other buttons fall like leaves, then the new page opens ---
+// --- "View in full screen" transition ---
 
 const btnFullScreen = document.getElementById("btnFullScreen");
 const fullscreenPage = document.getElementById("fullscreenPage");
@@ -90,38 +91,52 @@ btnBackFullScreen.addEventListener("click", () => {
   mainContainer.classList.remove("hidden");
 });
 
+// --- Fetch Playlists & Conteúdo Oficial ---
+
 async function fetchPlaylists() {
   try {
-    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+    // 1. Pesquisa Playlists criadas no canal
+    let url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${CHANNEL_ID}&maxResults=20&key=${API_KEY}`;
+    let res = await fetch(url);
+    let data = await res.json();
 
-    const res = await fetch(proxyUrl);
-    const data = await res.json();
+    let items = data.items || [];
 
-    if (!data.contents) {
-      playlistsGrid.innerHTML = "<p>No content found.</p>";
-      return;
+    // 2. Se não devolver playlists criadas especificamente, carrega os vídeos públicos recentes
+    if (items.length === 0) {
+      url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&order=date&type=video&maxResults=12&key=${API_KEY}`;
+      res = await fetch(url);
+      data = await res.json();
+      items = data.items || [];
     }
 
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-    const entries = xmlDoc.querySelectorAll("entry");
-
-    if (entries.length === 0) {
-      playlistsGrid.innerHTML = "<p>No videos found.</p>";
+    if (items.length === 0) {
+      playlistsGrid.innerHTML = "<p>No content available right now.</p>";
       return;
     }
 
     playlistsGrid.innerHTML = "";
 
-    entries.forEach((entry) => {
-      const title = entry.querySelector("title").textContent;
-      const videoId = entry.querySelector("yt\\:videoId, videoId").textContent;
-      const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-      const thumbnail = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+    items.forEach((item) => {
+      const title = item.snippet.title;
+      const isPlaylist =
+        item.kind === "youtube#playlist" || (item.id && item.id.playlistId);
+
+      const id = isPlaylist
+        ? item.id.playlistId || item.id
+        : item.id.videoId || item.id;
+
+      const linkUrl = isPlaylist
+        ? `https://www.youtube.com/playlist?list=${id}`
+        : `https://www.youtube.com/watch?v=${id}`;
+
+      const thumbnail =
+        item.snippet.thumbnails.high?.url ||
+        item.snippet.thumbnails.medium?.url ||
+        item.snippet.thumbnails.default?.url;
 
       const card = document.createElement("a");
-      card.href = videoUrl;
+      card.href = linkUrl;
       card.target = "_blank";
       card.className = "playlist-card";
       card.innerHTML = `
@@ -134,10 +149,12 @@ async function fetchPlaylists() {
 
     isPlaylistsLoaded = true;
   } catch (error) {
-    console.error("Erro ao carregar vídeos:", error);
+    console.error("Erro ao carregar conteúdo:", error);
     playlistsGrid.innerHTML = "<p>Failed to load content.</p>";
   }
 }
+
+// --- Background Music Control ---
 
 let player;
 let isPlaying = true;
