@@ -5,7 +5,7 @@ const myItchGames = [
   {
     title: "Musguinho",
     link: "https://acid-rainbow.itch.io/musguinho",
-    thumbnail: "musguinho_completo.png", // Vai buscar a imagem local da pasta do projeto
+    thumbnail: "musguinho_completo.png",
   },
 ];
 
