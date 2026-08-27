@@ -1,108 +1,92 @@
 const API_KEY = "AIzaSyC_-mD0SnxS917L6H9JChpqxW3wnlzY0ZQ";
 const CHANNEL_ID = "UCmLuDdUU9hQBPvKamaO87cg";
 
+const myItchGames = [
+  {
+    title: "Musguinho",
+    link: "https://acid-rainbow.itch.io/musguinho",
+    thumbnail: "musguinho_completo.png", // Vai buscar a imagem local da pasta do projeto
+  },
+];
+
+// Elementos Básicos
 const btnAbout = document.getElementById("btnAbout");
 const aboutSection = document.getElementById("aboutSection");
-
-btnAbout.addEventListener("click", () => {
-  aboutSection.classList.toggle("hidden");
-});
+btnAbout.addEventListener("click", () =>
+  aboutSection.classList.toggle("hidden"),
+);
 
 const btnContact = document.getElementById("btnContact");
 const contactSection = document.getElementById("contactSection");
+btnContact.addEventListener("click", () =>
+  contactSection.classList.toggle("hidden"),
+);
 
-btnContact.addEventListener("click", () => {
-  contactSection.classList.toggle("hidden");
-});
-
-const btnYoutube = document.getElementById("btnYoutube");
-const btnBackYoutube = document.getElementById("btnBackYoutube");
-const youtubeSection = document.getElementById("youtubeSection");
-const playlistsGrid = document.getElementById("playlistsGrid");
 const mainContainer = document.getElementById("mainContainer");
 const bottomButtonsGroup = document.getElementById("bottomButtonsGroup");
 const btnAboutElement = document.getElementById("btnAbout");
 const mainHeader = document.querySelector(".main-header");
-const youtubeHeader = document.querySelector(".youtube-header");
 
+// --- Grelhas ---
+const gamesSection = document.getElementById("gamesSection");
+const gamesGrid = document.getElementById("gamesGrid");
+let isGamesLoaded = false;
+
+const youtubeSection = document.getElementById("youtubeSection");
+const playlistsGrid = document.getElementById("playlistsGrid");
 let isPlaylistsLoaded = false;
 
-btnYoutube.addEventListener("click", () => {
-  const isOpening = youtubeSection.classList.contains("hidden");
-
-  if (isOpening) {
-    youtubeSection.classList.remove("hidden");
-    if (!isPlaylistsLoaded) {
-      fetchPlaylists();
-    }
-  } else {
-    youtubeSection.classList.add("hidden");
+// --- Ações dos Botões ---
+document.getElementById("btnGames").addEventListener("click", () => {
+  gamesSection.classList.toggle("hidden");
+  youtubeSection.classList.add("hidden");
+  if (!isGamesLoaded) {
+    loadMyGames();
   }
 });
+document
+  .getElementById("btnBackGames")
+  .addEventListener("click", () => gamesSection.classList.add("hidden"));
 
-btnBackYoutube.addEventListener("click", () => {
-  youtubeSection.classList.add("hidden");
+document.getElementById("btnYoutube").addEventListener("click", () => {
+  youtubeSection.classList.toggle("hidden");
+  gamesSection.classList.add("hidden");
+  if (!isPlaylistsLoaded) {
+    fetchPlaylists();
+  }
 });
+document
+  .getElementById("btnBackYoutube")
+  .addEventListener("click", () => youtubeSection.classList.add("hidden"));
 
-// --- "View in full screen" transition ---
-
-const btnFullScreen = document.getElementById("btnFullScreen");
-const fullscreenPage = document.getElementById("fullscreenPage");
-const fullscreenPlaylistsGrid = document.getElementById(
-  "fullscreenPlaylistsGrid",
-);
-const btnBackFullScreen = document.getElementById("btnBackFullScreen");
-
-function getLeafElements() {
-  return [
-    mainHeader,
-    btnAboutElement,
-    aboutSection,
-    youtubeHeader,
-    bottomButtonsGroup,
-  ].filter((el) => el && !el.classList.contains("hidden"));
+function loadMyGames() {
+  gamesGrid.innerHTML = "";
+  if (myItchGames.length === 0) {
+    gamesGrid.innerHTML = "<p>No games added yet.</p>";
+    return;
+  }
+  myItchGames.forEach((game) => {
+    const card = document.createElement("a");
+    card.href = game.link;
+    card.target = "_blank";
+    card.className = "grid-card game-card";
+    card.innerHTML = `<img src="${game.thumbnail}" alt="${game.title}"><p>${game.title}</p>`;
+    gamesGrid.appendChild(card);
+  });
+  isGamesLoaded = true;
 }
 
-btnFullScreen.addEventListener("click", () => {
-  const leaves = getLeafElements();
-
-  leaves.forEach((el, index) => {
-    el.style.animationDelay = `${index * 0.12}s`;
-    el.classList.add("leaf-fall");
-  });
-
-  fullscreenPlaylistsGrid.innerHTML = playlistsGrid.innerHTML;
-
-  const totalDelay = leaves.length * 120 + 950;
-
-  setTimeout(() => {
-    mainContainer.classList.add("hidden");
-    fullscreenPage.classList.remove("hidden");
-
-    leaves.forEach((el) => {
-      el.classList.remove("leaf-fall");
-      el.style.animationDelay = "";
-    });
-  }, totalDelay);
-});
-
-btnBackFullScreen.addEventListener("click", () => {
-  fullscreenPage.classList.add("hidden");
-  mainContainer.classList.remove("hidden");
-});
-
-// --- Fetch Playlists & Conteúdo Oficial ---
-
+// --- API do YouTube Otimizada ---
 async function fetchPlaylists() {
   try {
-    // 1. Pesquisa Playlists criadas no canal
+    playlistsGrid.innerHTML =
+      "<p class='loading-text'>Loading playlists...</p>";
+
     let url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${CHANNEL_ID}&maxResults=20&key=${API_KEY}`;
     let res = await fetch(url);
     let data = await res.json();
-
     let items = data.items || [];
 
-    // 2. Se não devolver playlists criadas especificamente, carrega os vídeos públicos recentes
     if (items.length === 0) {
       url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&order=date&type=video&maxResults=12&key=${API_KEY}`;
       res = await fetch(url);
@@ -116,12 +100,10 @@ async function fetchPlaylists() {
     }
 
     playlistsGrid.innerHTML = "";
-
     items.forEach((item) => {
       const title = item.snippet.title;
       const isPlaylist =
         item.kind === "youtube#playlist" || (item.id && item.id.playlistId);
-
       const id = isPlaylist
         ? item.id.playlistId || item.id
         : item.id.videoId || item.id;
@@ -138,24 +120,72 @@ async function fetchPlaylists() {
       const card = document.createElement("a");
       card.href = linkUrl;
       card.target = "_blank";
-      card.className = "playlist-card";
-      card.innerHTML = `
-        <img src="${thumbnail}" alt="${title}">
-        <p>${title}</p>
-      `;
-
+      card.className = "grid-card playlist-card";
+      card.innerHTML = `<img src="${thumbnail}" alt="${title}"><p>${title}</p>`;
       playlistsGrid.appendChild(card);
     });
 
     isPlaylistsLoaded = true;
   } catch (error) {
-    console.error("Erro ao carregar conteúdo:", error);
+    console.error("Erro ao carregar conteúdo do YT:", error);
     playlistsGrid.innerHTML = "<p>Failed to load content.</p>";
   }
 }
 
-// --- Background Music Control ---
+// --- Ecrã Inteiro ---
+const fullscreenPage = document.getElementById("fullscreenPage");
+const btnBackFullScreen = document.getElementById("btnBackFullScreen");
+const fullscreenGrid = document.getElementById("fullscreenGrid");
+const fullscreenTitle = document.getElementById("fullscreenTitle");
 
+function openFullScreen(title, sourceGrid) {
+  const leaves = [
+    mainHeader,
+    btnAboutElement,
+    aboutSection,
+    document.getElementById("btnGames"),
+    document.getElementById("btnYoutube"),
+    bottomButtonsGroup,
+    gamesSection,
+    youtubeSection,
+  ].filter((el) => el && !el.classList.contains("hidden"));
+
+  leaves.forEach((el, index) => {
+    el.style.animationDelay = `${index * 0.1}s`;
+    el.classList.add("leaf-fall");
+  });
+
+  fullscreenTitle.textContent = title;
+  fullscreenGrid.innerHTML = sourceGrid.innerHTML;
+
+  setTimeout(
+    () => {
+      mainContainer.classList.add("hidden");
+      fullscreenPage.classList.remove("hidden");
+      leaves.forEach((el) => {
+        el.classList.remove("leaf-fall");
+        el.style.animationDelay = "";
+      });
+    },
+    leaves.length * 100 + 800,
+  );
+}
+
+document
+  .getElementById("btnFullScreenGames")
+  .addEventListener("click", () => openFullScreen("My Games", gamesGrid));
+document
+  .getElementById("btnFullScreenYoutube")
+  .addEventListener("click", () =>
+    openFullScreen("My Playlists", playlistsGrid),
+  );
+
+btnBackFullScreen.addEventListener("click", () => {
+  fullscreenPage.classList.add("hidden");
+  mainContainer.classList.remove("hidden");
+});
+
+// --- Controlo de Música de Fundo (YouTube Iframe API) ---
 let player;
 let isPlaying = true;
 
@@ -199,3 +229,53 @@ function onPlayerStateChange(event) {
     musicIcon.innerHTML = SOUND_OFF_SVG;
   }
 }
+
+// --- Efeito de Brilhos no Cursor ---
+const canvas = document.getElementById("sparklesCanvas");
+const ctx = canvas.getContext("2d");
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+window.addEventListener("mousemove", (e) => {
+  for (let i = 0; i < 2; i++) {
+    particles.push({
+      x: e.clientX,
+      y: e.clientY,
+      size: Math.random() * 3 + 1.5,
+      color: Math.random() > 0.5 ? "#ff85a2" : "#ffc2d1",
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: Math.random() * 1.5 + 0.5,
+      alpha: 1,
+      decay: Math.random() * 0.02 + 0.015,
+    });
+  }
+});
+
+function animateSparkles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= p.decay;
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+      continue;
+    }
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+  requestAnimationFrame(animateSparkles);
+}
+animateSparkles();
