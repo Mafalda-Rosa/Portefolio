@@ -7,6 +7,11 @@ const myItchGames = [
     link: "https://acid-rainbow.itch.io/musguinho",
     thumbnail: "musguinho_completo.png",
   },
+  {
+    title: "Musguinho Android",
+    link: "https://acid-rainbow.itch.io/musguinho-android",
+    thumbnail: "MUSGUINHO_ANDROID0.png",
+  },
 ];
 
 // Elementos Básicos
@@ -244,13 +249,12 @@ resizeCanvas();
 
 window.addEventListener("mousemove", (e) => {
   if (Math.random() < 0.3) {
-    // Controla a frequência com que as bolhas aparecem
     bubbles.push({
       x: e.clientX,
       y: e.clientY,
       radius: Math.random() * 8 + 4,
       vx: (Math.random() - 0.5) * 0.8,
-      vy: -Math.random() * 1.2 - 0.5, // Sobem suavemente
+      vy: -Math.random() * 1.2 - 0.5,
       alpha: 0.7,
       decay: Math.random() * 0.015 + 0.008,
       shineOffset: Math.random() * 2,
@@ -275,7 +279,6 @@ function animateBubbles() {
     ctx.save();
     ctx.globalAlpha = b.alpha;
 
-    // Corpo translúcido da bolha
     ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
     ctx.lineWidth = 1.2;
     ctx.fillStyle = "rgba(255, 182, 193, 0.15)";
@@ -284,7 +287,6 @@ function animateBubbles() {
     ctx.fill();
     ctx.stroke();
 
-    // Brilho característico da bolha de sabão
     ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
     ctx.beginPath();
     ctx.arc(
