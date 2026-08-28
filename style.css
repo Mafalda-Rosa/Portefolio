@@ -4,7 +4,10 @@ body {
     system-ui,
     -apple-system,
     sans-serif;
-  background-color: #fdebed;
+  background-image: url("website15.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #4a2c2a;
   margin: 0;
   padding: 0;
@@ -52,21 +55,25 @@ body {
 }
 
 h1 {
-  font-family: "Ms Madi", cursive, sans-serif;
-  font-size: 4.8rem;
+  font-family: "Press Start 2P", system-ui, monospace, sans-serif;
+  font-size: 2.5rem;
   color: #4a2c2a;
   margin: 0;
   font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1;
+  letter-spacing: -1px;
+  line-height: 1.4;
 }
 
 .subtitle {
-  font-size: 1.3rem;
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 1.4rem;
   color: #4a2c2a;
-  margin: 0.3rem 0 0 0;
-  font-weight: 500;
-  opacity: 0.9;
+  margin: 0.5rem 0 0 0;
+  opacity: 0.95;
+  letter-spacing: 0.5px;
 }
 
 .menu-container {
@@ -84,15 +91,15 @@ h1 {
 }
 
 .btn {
-  font-family: "Quicksand", sans-serif;
+  font-family: "Playfair Display", serif;
   display: block;
   background-color: #fff0f3;
   color: #4a2c2a;
   text-decoration: none;
   padding: 1rem 1.2rem;
   border-radius: 12px;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 1.15rem;
   border: 1px solid #f7d6d9;
   cursor: pointer;
   text-align: center;
@@ -126,9 +133,6 @@ h1 {
 }
 .email-icon {
   fill: #ea4335;
-}
-.game-icon {
-  fill: #9b59b6;
 }
 
 .about-content {

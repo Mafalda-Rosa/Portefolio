@@ -230,10 +230,10 @@ function onPlayerStateChange(event) {
   }
 }
 
-// --- Efeito de Brilhos no Cursor ---
+// --- Efeito de Bolhas de Sabão no Cursor ---
 const canvas = document.getElementById("sparklesCanvas");
 const ctx = canvas.getContext("2d");
-let particles = [];
+let bubbles = [];
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
@@ -243,39 +243,62 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 window.addEventListener("mousemove", (e) => {
-  for (let i = 0; i < 2; i++) {
-    particles.push({
+  if (Math.random() < 0.3) {
+    // Controla a frequência com que as bolhas aparecem
+    bubbles.push({
       x: e.clientX,
       y: e.clientY,
-      size: Math.random() * 3 + 1.5,
-      color: Math.random() > 0.5 ? "#ff85a2" : "#ffc2d1",
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: Math.random() * 1.5 + 0.5,
-      alpha: 1,
-      decay: Math.random() * 0.02 + 0.015,
+      radius: Math.random() * 8 + 4,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: -Math.random() * 1.2 - 0.5, // Sobem suavemente
+      alpha: 0.7,
+      decay: Math.random() * 0.015 + 0.008,
+      shineOffset: Math.random() * 2,
     });
   }
 });
 
-function animateSparkles() {
+function animateBubbles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.alpha -= p.decay;
-    if (p.alpha <= 0) {
-      particles.splice(i, 1);
+
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    const b = bubbles[i];
+    b.x += b.vx;
+    b.y += b.vy;
+    b.alpha -= b.decay;
+
+    if (b.alpha <= 0 || b.radius <= 0) {
+      bubbles.splice(i, 1);
       continue;
     }
+
     ctx.save();
-    ctx.globalAlpha = p.alpha;
-    ctx.fillStyle = p.color;
+    ctx.globalAlpha = b.alpha;
+
+    // Corpo translúcido da bolha
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.lineWidth = 1.2;
+    ctx.fillStyle = "rgba(255, 182, 193, 0.15)";
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
     ctx.fill();
+    ctx.stroke();
+
+    // Brilho característico da bolha de sabão
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.beginPath();
+    ctx.arc(
+      b.x - b.radius * 0.35,
+      b.y - b.radius * 0.35,
+      b.radius * 0.25,
+      0,
+      Math.PI * 2,
+    );
+    ctx.fill();
+
     ctx.restore();
   }
-  requestAnimationFrame(animateSparkles);
+
+  requestAnimationFrame(animateBubbles);
 }
-animateSparkles();
+animateBubbles();
